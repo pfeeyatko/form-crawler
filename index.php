@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
             <form class="form-inline" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
               <div class="form-group">
                 <label for="url">Website</label>
-                <input type="text" class="form-control" id="url" name="url" placeholder="http://reborn.co" required>
+                <input type="text" class="form-control" id="url" name="url" placeholder="http://reborn.co" value="<?php if (isset($url)) { echo $url; } ?>" required>
               </div>
               <button type="submit" class="btn btn-primary" name="submit">Crawl</button>
             </form>
