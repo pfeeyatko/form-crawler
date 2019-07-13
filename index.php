@@ -48,8 +48,7 @@ if (isset($_POST['submit'])) {
         <?php if (!isset($error)): ?>
 
             <?php if (isset($crawler)): ?>
-                <pre>
-                <?php
+                <pre><?php
                     $crawler->filter('input')->each(function($node) {
 
                         $req = is_null($node->attr('required')) ? '' : ' *Required';
