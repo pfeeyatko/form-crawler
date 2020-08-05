@@ -25,13 +25,13 @@ if (isset($_POST['submit'])) {
     <title>Form Crawler</title>
 
     <!-- Bootstrap -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
 
   <body>
 
     <div class="container">
-        <h1 class="page-header">Form Crawler</h1>
+        <h1 class="page-header mt-5">Form Crawler</h1>
 
         <p>Enter a URL below to a web page with a form on it. This script will then crawl the page and extract all of the form fields and related information.</p><br>
 
@@ -41,7 +41,7 @@ if (isset($_POST['submit'])) {
                 <label for="url">URL</label>
                 <input type="text" class="form-control" id="url" name="url" placeholder="http://example.com" value="<?php if (isset($url)) { echo $url; } ?>" required>
               </div>
-              <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+              <button type="submit" class="btn btn-primary" name="submit">Submit</button><br><br>
             </form>
         </div>
 
