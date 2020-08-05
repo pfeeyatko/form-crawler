@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Form Crawler</title>
+    <title>form crawler</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -31,7 +31,7 @@ if (isset($_POST['submit'])) {
   <body>
 
     <div class="container">
-        <h1 class="page-header mt-5">Form Crawler</h1>
+        <h1 class="page-header mt-5">form crawler</h1>
 
         <p>Enter a URL below to a web page with a form on it. This script will then crawl the page and extract all of the form fields and related information.</p><br>
 
