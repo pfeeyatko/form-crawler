@@ -4,14 +4,51 @@ require './vendor/autoload.php';
 
 use Goutte\Client;
 
+$formFields = [];
+$client = new Client();
+
 if (isset($_POST['submit'])) {
     $url = empty($_POST['url']) ? $_SERVER['HTTP_REFERER'] : $_POST['url'];
-    $client = new Client();
 
     try {
         $crawler = $client->request('GET', $url);
     } catch (Exception $e) {
         $error = $e;
+    }
+
+    if (isset($crawler)) {
+        $crawler->filter('input')->each(function($node) {
+            global $formFields;
+            $req = is_null($node->attr('required')) ? '' : ' *Required';
+    
+            switch ($node->attr('type')) {
+                case 'hidden':
+                    break;
+                case 'radio':
+                case 'checkbox':
+                    array_push($formFields, 'Input field: ' . $node->attr('name') . ', value: ' . $node->attr('value') . ', type: ' . $node->attr('type') . $req . PHP_EOL);
+                    break;
+                default:                    
+                    array_push($formFields, 'Input field: ' . $node->attr('name') . ', type: ' . $node->attr('type') . $req . PHP_EOL);
+                    break;
+            }
+        });
+
+        $crawler->filter('select')->each(function($node) {
+            global $formFields;
+            $req = is_null($node->attr('required')) ? '' : ' *Required';
+            array_push($formFields, 'Select field: ' . $node->attr('name') .  $req . ', Options: ' . PHP_EOL);
+    
+            foreach ($node->children() as $option) {
+                array_push($formFields, '    ' . $option->nodeValue . PHP_EOL);
+            }
+        });
+    
+        $crawler->filter('textarea')->each(function($node) {
+            global $formFields;
+            $req = is_null($node->attr('required')) ? '' : ' *Required';
+            array_push($formFields, 'Form field: ' . $node->attr('name') . ', type: textarea' . $req . PHP_EOL);
+        });
     }
 }
 
@@ -22,7 +59,7 @@ if (isset($_POST['submit'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>form crawler</title>
+    <title>Form crawler</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -31,9 +68,9 @@ if (isset($_POST['submit'])) {
   <body>
 
     <div class="container">
-        <h1 class="page-header mt-5">form crawler</h1>
+        <h1 class="page-header mt-5">Form crawler</h1>
 
-        <p>Enter a URL below to a web page with a form on it. This script will then crawl the page and extract all of the form fields and related information.</p><br>
+        <p>Enter a URL below to a web page with a form on it. This script will then crawl the page and extract all of the form fields and related information.</p>
 
         <div class="well">
             <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -45,49 +82,29 @@ if (isset($_POST['submit'])) {
             </form>
         </div>
 
-        <?php if (!isset($error)): ?>
+        <?php if (isset($_POST['submit'])): ?>
+            <?php if (isset($error)): ?>
 
-            <?php if (isset($crawler)): ?>
-                <pre><?php
-                    $crawler->filter('input')->each(function($node) {
+                <div class="alert alert-danger" role="alert"><?php echo $error; ?></div>
 
-                        $req = is_null($node->attr('required')) ? '' : ' *Required';
+            <?php else: ?>
 
-                        switch ($node->attr('type')) {
-                            case 'hidden':
-                                break;
-                            case 'radio':
-                            case 'checkbox':
-                                echo 'Input field: ' . $node->attr('name') . ', value: ' . $node->attr('value') . ', type: ' . $node->attr('type') . $req . PHP_EOL;
-                                break;
-                            default:
-                                echo 'Input field: ' . $node->attr('name') . ', type: ' . $node->attr('type') . $req . PHP_EOL;
-                                break;
-                        }
+                <?php if (count($formFields) > 0): ?>
 
-                    });
+                    <div class="alert alert-success">
+                        <pre style="margin:0;"><?php
+                            foreach ($formFields as $field) {
+                                echo $field;
+                            }
+                        ?></pre>
+                    </div>
 
-                    $crawler->filter('select')->each(function($node) {
-                        $req = is_null($node->attr('required')) ? '' : ' *Required';
+                <?php else: ?>
 
-                        echo 'Select field: ' . $node->attr('name') .  $req . ', Options: ' . PHP_EOL;
+                    <div class="alert alert-warning">No form fields found</div>
 
-                        foreach ($node->children() as $option) {
-                            echo '    ' . $option->nodeValue . PHP_EOL;
-                        }
-                    });
-
-                    $crawler->filter('textarea')->each(function($node) {
-                        $req = is_null($node->attr('required')) ? '' : ' *Required';
-
-                        echo 'Form field: ' . $node->attr('name') . ', type: textarea' . $req . PHP_EOL;
-                    });
-                ?>
-                </pre>
+                <?php endif; ?>
             <?php endif; ?>
-
-        <?php else: ?>
-            <div class="alert alert-danger" role="alert"><?php echo $error; ?></div>
         <?php endif; ?>
     </div>
 
